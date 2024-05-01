@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import PasswordInput from "../../components/input/PasswordInput";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { validateEmail } from "../../utils/helper";
+import axiosInstance from '../../utils/axiosInstance'
 
 const Signup = () => {
     const [name, setName] = useState("");
@@ -10,7 +11,9 @@ const Signup = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
 
-    const handleSignup = (e) => {
+    const navigate = useNavigate();
+
+    const handleSignup = async (e) => {
         e.preventDefault();
 
         if (!name) {
@@ -29,13 +32,41 @@ const Signup = () => {
         }
 
         setError(null);
+
+        try {
+            const { data } = await axiosInstance.post("/create-account", {
+                fullName: name,
+                email,
+                password,
+            });
+            
+            if (data && data.error) {
+                setError(data.message);
+                return;
+            }
+
+            if (data && data.accessToken) {
+                localStorage.setItem("token", data.accessToken);
+                navigate("/dashboard");
+            }
+        } catch (error) {
+            if (
+                error.response &&
+                error.response.data &&
+                error.response.data.message
+            ) {
+                setError(error.response.data.message);
+            } else {
+                setError("An unexpected error occurred.Please try again");
+            }
+        }
     };
 
     return (
         <>
             <Navbar />
             <div className="flex items-center justify-center mt-28">
-                <div className="w-95 border rounded bg-white py-10 px-7">
+                <div className="sm:w-1/2 w-11/12 border rounded bg-white sm:py-10 sm:px-7 px-5 py-7">
                     <form onSubmit={handleSignup}>
                         <h4 className="text-2xl mb-7">Signup</h4>
 

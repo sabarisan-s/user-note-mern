@@ -5,7 +5,7 @@ import { IoMdClose } from "react-icons/io";
 const SearchBar = ({ value, onChange, handleSearch, onCloseSearch }) => {
     return (
         <>
-            <div className="w-80 flex items-center px-4 bg-slate-100 rounded-md ">
+            <div className="sm:w-80 mx-1 sm:mx-0 flex items-center px-3 sm:px-4 bg-slate-100 rounded-md ">
                 <input
                     type="text"
                     placeholder="search notes"

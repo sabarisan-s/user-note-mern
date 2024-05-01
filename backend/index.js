@@ -136,7 +136,7 @@ app.get("/get-user", authenticateToken, async (req, res) => {
     const isUser = await userModel.findOne({ _id: user._id });
     if (!isUser) {
         return res
-            .status(404)
+            .status(401)
             .json({ error: true, message: " User not found " });
     }
 
@@ -173,7 +173,7 @@ app.post("/add-note", authenticateToken, async (req, res, next) => {
         });
         return res
             .status(201)
-            .json({ error: false, message: "Note Added Successful" });
+            .json({ error: false, note, message: "Note Added Successful" });
     } catch (error) {
         return res
             .status(500)
@@ -226,6 +226,7 @@ app.put("/edit-note/:noteId", authenticateToken, async (req, res, next) => {
 
 //get request api note /get-all-notes
 app.get("/get-all-notes", authenticateToken, async (req, res, next) => {
+    console.log(req.user);
     const { user } = req.user;
     try {
         const notes = await noteModel
@@ -319,6 +320,39 @@ app.put(
         }
     }
 );
+
+//get request api note /search-notes
+app.get("/search-notes/", authenticateToken, async (req, res, next) => {
+    const { user } = req.user;
+    const { query } = req.query;
+    if (!query) {
+        return res
+            .status(400)
+            .json({ error: true, message: "Search query is required" });
+    }
+
+    try {
+        const matchNotes = await noteModel.find({
+            userId: user._id,
+            $or:[
+                {title:{$regex :new RegExp(query,'i')}},
+                {content:{$regex :new RegExp(query,'i')}},
+            ]
+        });
+
+        return res.json({
+            error: false,
+            notes:matchNotes,
+            message: "Note matching search query retrieved successfully",
+        });
+    } catch (error) {
+        if (error) {
+            return res
+                .status(500)
+                .json({ error: true, message: "Internal Server Error" });
+        }
+    }
+});
 
 mongoose
     .connect(process.env.MONGODB_URL)
