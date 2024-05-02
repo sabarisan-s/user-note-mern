@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import ProfileInfo from "../Card/ProfileInfo";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import SearchBar from "../SearchBar/SearchBar";
+import GuestProfile from "../Card/GuestProfile";
 
 const Navbar = ({
     userInfo,
@@ -29,8 +30,10 @@ const Navbar = ({
     return (
         <>
             <div className="bg-white flex items-center justify-between sm:px-6 py-2  drop-shadow px-2">
-                <h2 className="sm:text-xl text-lg font-medium text-black py-2">Notes</h2>
-                {isUserLogin && (
+                <Link to='/' className="sm:text-xl text-lg font-medium text-black py-2">
+                    Notes
+                </Link>
+                {isUserLogin ? (
                     <>
                         <SearchBar
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -40,6 +43,8 @@ const Navbar = ({
                         />
                         <ProfileInfo userInfo={userInfo} onLogout={onLogout} />
                     </>
+                ) : (
+                    <GuestProfile />
                 )}
             </div>
         </>
