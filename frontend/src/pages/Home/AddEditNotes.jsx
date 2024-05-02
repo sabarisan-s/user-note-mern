@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import TagInput from "../../components/input/TagInput";
 import { MdClose } from "react-icons/md";
 import axiosInstance from '../../utils/axiosInstance'
+import Loading from "../../components/Loading/Loading";
 
 const AddEditNotes = ({ onClose, type, getAllNotes,noteData,showToastMessage }) => {
 
@@ -9,9 +10,11 @@ const AddEditNotes = ({ onClose, type, getAllNotes,noteData,showToastMessage }) 
     const [content, setContent] = useState(noteData?.content||"");
     const [tags, setTags] = useState(noteData?.tags||[]);
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(null);
 
     const addNewNote =async () => {
         try {
+            setIsLoading(true);
             const { data } = await axiosInstance.post("/add-note",{
                 title,
                 content,
@@ -33,12 +36,15 @@ const AddEditNotes = ({ onClose, type, getAllNotes,noteData,showToastMessage }) 
             } else {
                 setError("An unexpected error occurred.Please try again");
             }
+        }finally {
+            setIsLoading(null);
         }
     }
 
     const editNote =async () => {
         const noteId=noteData._id
         try {
+            setIsLoading(true);
             const { data } = await axiosInstance.put("/edit-note/"+noteId,{
                 title,
                 content,
@@ -60,6 +66,8 @@ const AddEditNotes = ({ onClose, type, getAllNotes,noteData,showToastMessage }) 
             } else {
                 setError("An unexpected error occurred.Please try again");
             }
+        }finally {
+            setIsLoading(null);
         }
     }
 
@@ -129,12 +137,17 @@ const AddEditNotes = ({ onClose, type, getAllNotes,noteData,showToastMessage }) 
 
                 {error && <p className="text-red-500 text-xs pt-4">{error}</p>}
 
+                {!isLoading ? (
                 <button
-                    className="btn-primary font-medium mt-5 p-3"
-                    onClick={handleAddNote}
-                >
-                   { type==='edit'?'Update':'Add Here'}
-                </button>
+                className="btn-primary font-medium mt-5 p-3"
+                onClick={handleAddNote}
+            >
+               { type==='edit'?'Update':'Add Here'}
+            </button>
+                        ) : (
+                            <Loading />
+                        )}
+
             </div>
         </>
     );

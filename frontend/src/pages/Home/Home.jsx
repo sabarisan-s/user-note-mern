@@ -18,6 +18,7 @@ const Home = () => {
         data: null,
     });
 
+
     const [userInfo, setUserInfo] = useState(null);
     const navigate = useNavigate();
     const [allNotes, setAllNotes] = useState([]);
@@ -33,6 +34,7 @@ const Home = () => {
     useEffect(() => {
         getUserInfo();
         getAllNotes();
+        setIsUserLogin(true);
         return () => {};
     }, []);
 
@@ -42,24 +44,27 @@ const Home = () => {
 
             if (data && data.user) {
                 setUserInfo(data.user);
-                setIsUserLogin(true);
             }
         } catch (error) {
             if (error.response.status === 401) {
                 localStorage.clear();
                 navigate("/login");
             }
+        }finally{
+            
         }
     };
 
     const getAllNotes = async () => {
         try {
+            
             const { data } = await axiosInstance.get("/get-all-notes");
 
             if (data && data.notes) {
                 setAllNotes(data.notes);
             }
-        } catch (error) {}
+        } catch (error) {
+        } 
     };
 
     const onEdit = (noteDetails) => {
@@ -167,6 +172,8 @@ const Home = () => {
             />
 
             <div className="container mx-auto">
+       
+
                 {allNotes.length > 0 ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-8">
                         {allNotes.map((item, index) => (

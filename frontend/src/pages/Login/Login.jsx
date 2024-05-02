@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 import PasswordInput from "../../components/input/PasswordInput";
 import { validateEmail } from "../../utils/helper";
 import axiosInstance from "../../utils/axiosInstance";
+import Loading from "../../components/Loading/Loading";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(null);
 
     const navigate = useNavigate();
     const handleLogin = async (e) => {
@@ -28,14 +30,15 @@ const Login = () => {
         setError(null);
 
         try {
+            setIsLoading(true);
             const { data } = await axiosInstance.post("/login", {
                 email,
                 password,
             });
-  
+
             if (data && data.accessToken) {
                 localStorage.setItem("token", data.accessToken);
-                
+
                 navigate("/dashboard");
             }
         } catch (error) {
@@ -48,6 +51,8 @@ const Login = () => {
             } else {
                 setError("An unexpected error occurred.Please try again");
             }
+        } finally {
+            setIsLoading(null);
         }
     };
 
@@ -77,10 +82,13 @@ const Login = () => {
                         {error && (
                             <p className="text-xs text-red-500 pb-1">{error}</p>
                         )}
-
-                        <button type="submit" className="btn-primary">
-                            Login
-                        </button>
+                        {!isLoading ? (
+                            <button type="submit" className="btn-primary">
+                                Login
+                            </button>
+                        ) : (
+                            <Loading />
+                        )}
 
                         <p className="text-sm text-center mt-4">
                             Not Registered Yet?{" "}

@@ -3,14 +3,15 @@ import Navbar from "../../components/Navbar/Navbar";
 import PasswordInput from "../../components/input/PasswordInput";
 import { Link, useNavigate } from "react-router-dom";
 import { validateEmail } from "../../utils/helper";
-import axiosInstance from '../../utils/axiosInstance'
+import axiosInstance from "../../utils/axiosInstance";
+import Loading from "../../components/Loading/Loading";
 
 const Signup = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
-
+    const [isLoading, setIsLoading] = useState(null);
     const navigate = useNavigate();
 
     const handleSignup = async (e) => {
@@ -34,12 +35,13 @@ const Signup = () => {
         setError(null);
 
         try {
+            setIsLoading(true);
             const { data } = await axiosInstance.post("/create-account", {
                 fullName: name,
                 email,
                 password,
             });
-            
+
             if (data && data.error) {
                 setError(data.message);
                 return;
@@ -59,6 +61,8 @@ const Signup = () => {
             } else {
                 setError("An unexpected error occurred.Please try again");
             }
+        } finally {
+            setIsLoading(null);
         }
     };
 
@@ -99,9 +103,13 @@ const Signup = () => {
                             <p className="text-xs text-red-500 pb-1">{error}</p>
                         )}
 
-                        <button type="submit" className="btn-primary">
-                            Create Account
-                        </button>
+                        {!isLoading ? (
+                            <button type="submit" className="btn-primary">
+                                Create Account
+                            </button>
+                        ) : (
+                            <Loading />
+                        )}
 
                         <p className="text-sm text-center mt-4">
                             Already have an account?{" "}

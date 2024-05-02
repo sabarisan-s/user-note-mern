@@ -29,8 +29,8 @@ const NoteCard = ({
                         onClick={onPinNote}
                     />
                 </div>
-                <p className="text-xs text-slate-600 mt-2">
-                    {content?.slice(0, 60)}
+                <p className="text-xs text-slate-600 mt-2 ">
+                    {content?.slice(0, 30)}
                 </p>
 
                 <div className=" flex items-center justify-between mt-2">
