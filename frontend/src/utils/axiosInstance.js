@@ -3,7 +3,7 @@ import axios from "axios";
 
 const BASE_URL = "https://notes-mern-api.onrender.com/";
 
-const axiosInstance = axios.create({
+const axiosInstance = axios.create({  
     baseURL: BASE_URL,
     timeout: 10000,
     headers: {

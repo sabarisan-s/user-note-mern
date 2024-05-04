@@ -14,7 +14,7 @@ const Guest = () => {
             />
 
             <p className="text-center mx-auto animate-bounce ">
-                Guest page soon ready! Please experience as User (register/login) page... Page little bit slow render deploy slow api 59s   
+                Guest page soon ready! Please visit as User (register/login) page... Page wait every button click render free deploy slow's api 59s   
             </p>
             </div>
         </div>
