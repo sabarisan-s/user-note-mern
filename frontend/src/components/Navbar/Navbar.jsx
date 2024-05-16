@@ -31,7 +31,7 @@ const Navbar = ({
         <>
             <div className="bg-white flex items-center justify-between sm:px-6 py-2  drop-shadow px-2">
                 <Link to={isUserLogin?'/dashboard':'/'} className="sm:text-xl text-lg font-medium text-black py-2">
-                Noteify
+                Notify
                 </Link>
                 {isUserLogin ? (
                     <>
